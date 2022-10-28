@@ -1,1 +1,1 @@
-# Proiect-colectiv-server
+# Proiect colectiv server
