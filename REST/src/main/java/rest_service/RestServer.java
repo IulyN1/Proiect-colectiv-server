@@ -10,18 +10,27 @@ import org.springframework.core.io.ClassPathResource;
 import java.util.Collections;
 import java.util.Properties;
 
+/**
+ * Rest server start class
+ */
 @ComponentScan(basePackages = {"repository","rest_service"})
 @SpringBootApplication
 public class RestServer {
+    /**
+     * Server port to run on
+     */
     @Value("{server.port}")
     private static int serverPort;
 
-
+    /**
+     * Bean parameter for repository construction
+     * @return Properties
+     */
     @Bean(name="jdbcProps")
     public static Properties createJdbcValues() {
         Properties jdbcProps = new Properties();
         try {
-            jdbcProps.load(new ClassPathResource("app.properties").getInputStream());
+            jdbcProps.load(new ClassPathResource("repo.properties").getInputStream());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -29,6 +38,10 @@ public class RestServer {
         return jdbcProps;
     }
 
+    /**
+     * Starts the server
+     * @param args doesn't accept any
+     */
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(RestServer.class);
         app.setDefaultProperties(Collections.singletonMap("server.port",String.valueOf(serverPort)));

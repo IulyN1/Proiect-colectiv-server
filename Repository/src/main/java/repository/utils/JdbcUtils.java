@@ -15,26 +15,23 @@ public class JdbcUtils {
 
 
     public JdbcUtils(Properties jdbcValues){
-        this.url    = jdbcValues.getProperty("jdbc.url");   // TODO this isn't working as it should, fix
+        this.url    = jdbcValues.getProperty("jdbc.url");
         this.user   = jdbcValues.getProperty("jdbc.user");
         this.pass   = jdbcValues.getProperty("jdbc.pass");
     }
 
     private Connection instance=null;
-
     /**
      * Gets a new connection to the database
      * @return Connection
      */
     private Connection getNewConnection() {
-        System.out.println(url + " | " + user +  ' ' + pass);
         Connection con=null;
         try {
             if (user!=null && pass!=null)
                 con = DriverManager.getConnection(url, user, pass);
             else
-                //"jdbc:sqlite:C:\\CyAN1D3\\School 3-1\\Colectiv\\Proiect-colectiv-server\\Db1.db"
-                con = DriverManager.getConnection("jdbc:sqlite:C:\\CyAN1D3\\School 3-1\\Colectiv\\Proiect-colectiv-server\\Db1.db");
+                con = DriverManager.getConnection(url);
         }
         catch (SQLException e) {
             System.out.println("Error getting connection " + e);
