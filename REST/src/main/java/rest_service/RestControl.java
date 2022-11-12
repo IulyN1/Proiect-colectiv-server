@@ -2,10 +2,7 @@ package rest_service;
 
 import domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import repository.ProductRepository;
 
 @CrossOrigin
@@ -19,5 +16,10 @@ public class RestControl {
     @RequestMapping(value="/products/", method= RequestMethod.GET)
     public Product[] getAll() throws Exception {
         return productRepository.getAll().toArray(new Product[0]);
+    }
+
+    @RequestMapping(value="/{uid}/favorites", method= RequestMethod.GET)
+    public Product[] getFavoritesForUser(@PathVariable("uid") int uid) throws Exception {
+        return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
     }
 }
