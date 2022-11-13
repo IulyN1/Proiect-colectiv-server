@@ -110,6 +110,21 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public void addToFavorites(int uid, Product p) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("INSERT INTO UsersProductsFavorites (uid, pid) VALUES (?, ?);");
+            statement.setInt(1, uid);
+            statement.setInt(2, p.getId());
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new Exception("Error adding to favorite!");
+        }
+    }
+
+    @Override
     public int size() {
         return -1;
     }

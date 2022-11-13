@@ -11,4 +11,6 @@ public interface ProductRepository extends Repository<Product>{
     void test();
 
     List<Product> getFavoritesByUid(int uid) throws Exception;
+
+    void addToFavorites(int uid, Product p) throws Exception;
 }
