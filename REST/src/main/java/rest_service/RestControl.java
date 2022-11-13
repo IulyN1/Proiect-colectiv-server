@@ -22,14 +22,17 @@ public class RestControl {
         return productRepository.getAll().toArray(new Product[0]);
     }
 
-    @RequestMapping(value="/product/{pid}/reviews", method= RequestMethod.GET)
-    public Review[] getReviewsForProduct(@PathVariable("pid") int pid) throws Exception {
-        return reviewRepository.getReviewsByProduct(pid).toArray(new Review[0]);
-    }
+
 
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.GET)
     public Product[] getFavoritesForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
+    }
+
+   //GET all reviews for a product
+    @RequestMapping(value="/product/{pid}/reviews", method= RequestMethod.GET)
+    public Review[] getReviewsForProduct(@PathVariable("pid") int pid) throws Exception {
+        return reviewRepository.getReviewsByProduct(pid).toArray(new Review[0]);
     }
 
     //ADD

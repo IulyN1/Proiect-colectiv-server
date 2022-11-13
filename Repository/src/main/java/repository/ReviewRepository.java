@@ -5,7 +5,7 @@ import domain.Review;
 import java.util.List;
 
 /**
- * Custom interface for the product repository
+ * Custom interface for the review repository
  */
 public interface ReviewRepository extends Repository<Review>{
     void test();

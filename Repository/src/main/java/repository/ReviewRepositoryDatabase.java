@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Database containing products
+ * Database containing reviews
  */
 @Component
 public class ReviewRepositoryDatabase implements ReviewRepository {
