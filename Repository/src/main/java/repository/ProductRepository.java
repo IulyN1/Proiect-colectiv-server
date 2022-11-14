@@ -14,3 +14,4 @@ public interface ProductRepository extends Repository<Product>{
 
     void addToFavorites(int uid, Product p) throws Exception;
 }
+
