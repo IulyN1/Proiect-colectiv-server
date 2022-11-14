@@ -19,7 +19,8 @@ public class RestControl {
     }
 
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.GET)
-    public Product[] getFavoritesForUser(@PathVariable("uid") int uid) throws Exception {
+    public Product[] getFavoritesForUser(@PathVariable("uid") int uid
+    ) throws Exception {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
     }
 }
