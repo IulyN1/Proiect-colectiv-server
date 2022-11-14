@@ -51,4 +51,8 @@ public class RestControl {
 
     }
 
+    @RequestMapping(value="/{uid}/favorites", method= RequestMethod.POST)
+    public void addToFavorites(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
+        productRepository.addToFavorites(uid, product);
+    }
 }
