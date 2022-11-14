@@ -16,7 +16,6 @@ public class RestControl {
     @Autowired
     private UserRepository userRepository;
 
-
     @RequestMapping(value="/products/", method= RequestMethod.GET)
     public Product[] getAll() throws Exception {
         return productRepository.getAll().toArray(new Product[0]);
@@ -34,8 +33,12 @@ public class RestControl {
 
     //ADD
     @RequestMapping(value="/users", method = RequestMethod.POST)
-    public User create(@RequestBody User user) throws Exception{
+    public User create(@RequestBody User user) throws Exception {
         System.out.println("Adding user ... ");
-       return userRepository.add(user);
+        return userRepository.add(user);
+    }
+    @RequestMapping(value="/{uid}/favorites", method= RequestMethod.POST)
+    public void addToFavorites(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
+        productRepository.addToFavorites(uid, product);
     }
 }
