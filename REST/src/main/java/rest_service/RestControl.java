@@ -42,6 +42,20 @@ public class RestControl {
         return reviewRepository.getReviewsByProduct(pid).toArray(new Review[0]);
     }
 
+    //GET the reviews average for a specific product
+    @RequestMapping(value="/product/{pid}/reviewsAverage", method= RequestMethod.GET)
+    public float getReviewsAverageForProduct(@PathVariable("pid") int pid) throws Exception {
+        float sum = 0;
+        Review[] reviews = reviewRepository.getReviewsByProduct(pid).toArray(new Review[0]);
+
+        for(Review review : reviews)
+        {
+            sum += review.getNrOfStars();
+        }
+
+        return sum / reviews.length;
+    }
+
     //ADD
     @RequestMapping(value="/reviews", method = RequestMethod.POST)
     public Review create(@RequestBody Review review) throws Exception{
