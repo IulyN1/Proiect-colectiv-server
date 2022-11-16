@@ -67,9 +67,9 @@ public class ReviewRepositoryDatabase implements ReviewRepository {
                 int userId = result.getInt("userId");
                 int productId = result.getInt("productId");
                 String text = result.getString("text");
+                int nrOfStars = result.getInt("nrOfStars");
 
-
-                Review review = new Review(id, userId, productId, text);
+                Review review = new Review(id, userId, productId, nrOfStars, text);
                 reviews.add(review);
             }
             result.close();
@@ -100,6 +100,7 @@ public class ReviewRepositoryDatabase implements ReviewRepository {
 
                 int id = result2.getInt("id");
                 String text = result2.getString("text");
+                int nrOfStars = result2.getInt("nrOfStars");
                 result2.close();
 
                 PreparedStatement statement3 = con.prepareStatement
@@ -112,7 +113,7 @@ public class ReviewRepositoryDatabase implements ReviewRepository {
                 int userId = result3.getInt("userId");
                 result3.close();
 
-                Review review = new Review(id, userId, pid, text);
+                Review review = new Review(id, userId, pid, nrOfStars, text);
                 reviews.add(review);
             }
             result.close();
@@ -127,9 +128,10 @@ public class ReviewRepositoryDatabase implements ReviewRepository {
         Connection con = dbUtils.getConnection();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("INSERT INTO Reviews (text) VALUES ( ?);");
+                    ("INSERT INTO Reviews (text, nrOfStars) VALUES (?, ?);");
 
             statement.setString(1, review.getText());
+            statement.setInt(2, review.getNrOfStars());
             statement.executeUpdate();
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
@@ -161,9 +163,10 @@ public class ReviewRepositoryDatabase implements ReviewRepository {
 
     public Review updateReview(Review elem, int id) {
         Connection con= dbUtils.getConnection();
-        try(PreparedStatement preSmt=con.prepareStatement("UPDATE Reviews SET text =? WHERE id = ?;")){
-            preSmt.setString(1,elem.getText());
-            preSmt.setLong(2,id);
+        try(PreparedStatement preSmt=con.prepareStatement("UPDATE Reviews SET text = ?, nrOfStars = ? WHERE id = ?;")){
+            preSmt.setString(1, elem.getText());
+            preSmt.setInt(2, elem.getNrOfStars());
+            preSmt.setLong(3, id);
             elem.setId(id);
             int result=preSmt.executeUpdate();
 

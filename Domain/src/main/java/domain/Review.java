@@ -12,14 +12,16 @@ public class Review implements Serializable{
     private int id;
     private int userId;
     private int productId;
+    private int nrOfStars;
     private String text;
 
     public Review() {}
 
-    public Review(int id, int userId, int productId, String text) {
+    public Review(int id, int userId, int productId, int nrOfStars, String text) {
         this.id = id;
         this.userId = userId;
         this.productId = productId;
+        this.nrOfStars = nrOfStars;
         this.text= text;
     }
 
@@ -57,5 +59,11 @@ public class Review implements Serializable{
 
     public void setText(String text){ this.text = text; }
 
+    public int getNrOfStars() {
+        return nrOfStars;
+    }
 
+    public void setNrOfStars(int nrOfStars) {
+        this.nrOfStars = nrOfStars;
+    }
 }
