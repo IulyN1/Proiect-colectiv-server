@@ -66,7 +66,25 @@ public class UserRepositoryDatabase implements UserRepository {
 
     @Override
     public User find(User e) {
-        return null;
+        Connection con = dbUtils.getConnection();
+        User user = null;
+        try {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM Users WHERE email = ? AND password = ?");
+            statement.setString(1, e.getEmail());
+            statement.setString(2, e.getPassword());
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                String email = result.getString("email");
+                String password = result.getString("password");
+                user = new User(id, name, email, password);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            System.out.println("Error finding user " + user.getEmail());
+        }
+        return user;
     }
 
     @Override

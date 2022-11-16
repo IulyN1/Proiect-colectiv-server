@@ -1,5 +1,6 @@
 package rest_service;
 
+import domain.LoginForm;
 import domain.Product;
 import domain.Review;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +87,15 @@ public class RestControl {
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.POST)
     public void addToFavorites(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
         productRepository.addToFavorites(uid, product);
+    }
+
+    // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
+    // returns 1 if user exists and 0 if not
+    @RequestMapping(value="/login", method= RequestMethod.POST)
+    public int login(@RequestBody LoginForm loginForm) {
+        User temp = new User(null, loginForm.getEmail(), loginForm.getPassword());
+        boolean res = userRepository.find(temp) != null;
+        if(res) return 1;
+        else return 0;
     }
 }
