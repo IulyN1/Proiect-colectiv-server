@@ -110,6 +110,39 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public List<Product> getFavoriteByUidAndPid(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT * FROM UsersProductsFavorites WHERE uid=? AND pid=?");
+            statement.setInt(1, uid);
+            statement.setInt(2, pid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                PreparedStatement statement2 = con.prepareStatement
+                        ("SELECT * FROM Products WHERE id=?");
+                statement2.setInt(1, pid);
+
+                ResultSet result2 = statement2.executeQuery();
+                result2.next();
+
+                int id = result2.getInt("id");
+                String name = result2.getString("name");
+                int price = result2.getInt("price");
+                result2.close();
+                Product product = new Product(id, name, price);
+                products.add(product);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting favorite!");
+        }
+        return products;
+    }
+
+    @Override
     public void addToFavorites(int uid, Product p) throws Exception {
         Connection con = dbUtils.getConnection();
         try {

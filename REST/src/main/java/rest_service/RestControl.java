@@ -30,11 +30,14 @@ public class RestControl {
         return productRepository.getAll().toArray(new Product[0]);
     }
 
-
-
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.GET)
     public Product[] getFavoritesForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
+    }
+
+    @RequestMapping(value="/{uid}/favorites/{pid}", method= RequestMethod.GET)
+    public Product[] getFavoritesForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        return productRepository.getFavoriteByUidAndPid(uid, pid).toArray(new Product[0]);
     }
 
    //GET all reviews for a product
@@ -65,6 +68,7 @@ public class RestControl {
         return r;
 
     }
+
     //UPDATE
     @RequestMapping(value = "/reviews/{id}", method = RequestMethod.PUT)
     public Review update(@PathVariable("id") int id, @RequestBody Review review) throws Exception {
