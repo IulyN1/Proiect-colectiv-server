@@ -110,6 +110,39 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public List<Product> getWatchlistByUid(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT * FROM UsersProductsWatchlist WHERE uid=?");
+            statement.setInt(1, uid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int pid = result.getInt("pid");
+                PreparedStatement statement2 = con.prepareStatement
+                        ("SELECT * FROM Products WHERE id=?");
+                statement2.setInt(1, pid);
+
+                ResultSet result2 = statement2.executeQuery();
+                result2.next();
+
+                int id = result2.getInt("id");
+                String name = result2.getString("name");
+                int price = result2.getInt("price");
+                result2.close();
+                Product product = new Product(id, name, price);
+                products.add(product);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting watchlist!");
+        }
+        return products;
+    }
+
+    @Override
     public void addToFavorites(int uid, Product p) throws Exception {
         Connection con = dbUtils.getConnection();
         try {

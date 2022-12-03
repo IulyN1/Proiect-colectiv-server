@@ -30,11 +30,14 @@ public class RestControl {
         return productRepository.getAll().toArray(new Product[0]);
     }
 
-
-
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.GET)
     public Product[] getFavoritesForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
+    }
+
+    @RequestMapping(value="/{uid}/watchlist", method= RequestMethod.GET)
+    public Product[] getWatchlistForUser(@PathVariable("uid") int uid) throws Exception {
+        return productRepository.getWatchlistByUid(uid).toArray(new Product[0]);
     }
 
    //GET all reviews for a product
