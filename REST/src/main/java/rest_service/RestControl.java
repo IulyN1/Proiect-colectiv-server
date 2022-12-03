@@ -30,8 +30,6 @@ public class RestControl {
         return productRepository.getAll().toArray(new Product[0]);
     }
 
-
-
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.GET)
     public Product[] getFavoritesForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
@@ -65,6 +63,7 @@ public class RestControl {
         return r;
 
     }
+
     //UPDATE
     @RequestMapping(value = "/reviews/{id}", method = RequestMethod.PUT)
     public Review update(@PathVariable("id") int id, @RequestBody Review review) throws Exception {
@@ -84,9 +83,15 @@ public class RestControl {
         System.out.println("Adding user ... ");
         return userRepository.add(user);
     }
+
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.POST)
     public void addToFavorites(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
         productRepository.addToFavorites(uid, product);
+    }
+
+    @RequestMapping(value="/{uid}/watchlist", method= RequestMethod.POST)
+    public void addToWatchlist(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
+        productRepository.addToWatchlist(uid, product);
     }
 
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
