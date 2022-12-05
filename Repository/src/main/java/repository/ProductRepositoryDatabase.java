@@ -115,23 +115,14 @@ public class ProductRepositoryDatabase implements ProductRepository {
         List<Product> products = new ArrayList<>();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT * FROM UsersProductsWatchlist WHERE uid=?");
+                    ("SELECT id, name, price FROM UsersProductsWatchlist INNER JOIN Products ON UsersProductsWatchlist.pid = Products.id WHERE UsersProductsWatchlist.uid = ?");
             statement.setInt(1, uid);
 
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                int pid = result.getInt("pid");
-                PreparedStatement statement2 = con.prepareStatement
-                        ("SELECT * FROM Products WHERE id=?");
-                statement2.setInt(1, pid);
-
-                ResultSet result2 = statement2.executeQuery();
-                result2.next();
-
-                int id = result2.getInt("id");
-                String name = result2.getString("name");
-                int price = result2.getInt("price");
-                result2.close();
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
                 Product product = new Product(id, name, price);
                 products.add(product);
             }
