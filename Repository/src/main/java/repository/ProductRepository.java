@@ -12,6 +12,8 @@ public interface ProductRepository extends Repository<Product>{
 
     List<Product> getFavoritesByUid(int uid) throws Exception;
 
+    List<Product> getWatchlistByUid(int uid) throws Exception;
+
     void addToFavorites(int uid, Product p) throws Exception;
 
     void addToWatchlist(int uid, Product p) throws Exception;
