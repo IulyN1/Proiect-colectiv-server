@@ -135,6 +135,30 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public List<Product> getWatchlistByUid(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, price FROM UsersProductsWatchlist as W INNER JOIN Products as P ON W.pid = P.id WHERE W.uid = ?");
+            statement.setInt(1, uid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                Product product = new Product(id, name, price);
+                products.add(product);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting watchlist!");
+        }
+        return products;
+    }
+
+    @Override
     public void addToFavorites(int uid, Product p) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -146,6 +170,21 @@ public class ProductRepositoryDatabase implements ProductRepository {
             statement.executeUpdate();
         } catch (SQLException ex) {
             throw new Exception("Error adding to favorite!");
+        }
+    }
+
+    @Override
+    public void addToWatchlist(int uid, Product p) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("INSERT INTO UsersProductsWatchlist (uid, pid) VALUES (?, ?);");
+            statement.setInt(1, uid);
+            statement.setInt(2, p.getId());
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new Exception("Error adding to watchlist!");
         }
     }
 
