@@ -65,8 +65,9 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 int id = result.getInt("id");
                 String name = result.getString("name");
                 int price = result.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
 
-                Product product = new Product(id, name, price);
+                Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
             result.close();
@@ -98,8 +99,9 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 int id = result2.getInt("id");
                 String name = result2.getString("name");
                 int price = result2.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
                 result2.close();
-                Product product = new Product(id, name, price);
+                Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
             result.close();
@@ -124,7 +126,8 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 int id = result.getInt("id");
                 String name = result.getString("name");
                 int price = result.getInt("price");
-                Product product = new Product(id, name, price);
+                int nrInStock = result.getInt("nrInStock");
+                Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
             result.close();
@@ -148,7 +151,8 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 int id = result.getInt("id");
                 String name = result.getString("name");
                 int price = result.getInt("price");
-                Product product = new Product(id, name, price);
+                int nrInStock = result.getInt("nrInStock");
+                Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
             result.close();
