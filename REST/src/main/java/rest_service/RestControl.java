@@ -115,8 +115,8 @@ public class RestControl {
     @RequestMapping(value="/login", method= RequestMethod.POST)
     public int login(@RequestBody LoginForm loginForm) {
         User temp = new User(null, loginForm.getEmail(), loginForm.getPassword());
-        boolean res = userRepository.find(temp) != null;
-        if(res) return 1;
-        else return 0;
+        User res = userRepository.find(temp);
+        if(res == null) return -1;
+        else return res.getId();
     }
 }
