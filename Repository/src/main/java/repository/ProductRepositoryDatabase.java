@@ -229,6 +229,33 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public void deleteReview(int uid, int pid, int rid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        con.setAutoCommit(false);
+        try {
+            PreparedStatement statement1 = con.prepareStatement ("DELETE FROM UsersReviews WHERE userId=? AND reviewId=?");
+            statement1.setInt(1,uid);
+            statement1.setInt(2,rid);
+            statement1.executeUpdate();
+            PreparedStatement statement2 = con.prepareStatement ("DELETE FROM ProductsReviews WHERE productId=? AND reviewId=?");
+            statement2.setInt(1,pid);
+            statement2.setInt(2,rid);
+            statement2.executeUpdate();
+            PreparedStatement statement3 = con.prepareStatement ("DELETE FROM Reviews WHERE id=?");
+            statement3.setInt(1,rid);
+            statement3.executeUpdate();
+
+            con.commit();
+            con.setAutoCommit(true);
+        }
+        catch (Exception ex) {
+            con.rollback();
+            con.setAutoCommit(true);
+            throw new Exception("Error deleting from favorites with pid " + pid + " and uid " + uid);
+        }
+    }
+
+    @Override
     public int size() {
         return -1;
     }
