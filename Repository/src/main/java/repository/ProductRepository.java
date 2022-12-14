@@ -8,8 +8,6 @@ import java.util.List;
  * Custom interface for the product repository
  */
 public interface ProductRepository extends Repository<Product>{
-    void test();
-
     List<Product> getFavoritesByUid(int uid) throws Exception;
 
     List<Product> getWatchlistByUid(int uid) throws Exception;
@@ -21,5 +19,7 @@ public interface ProductRepository extends Repository<Product>{
     void addToFavorites(int uid, Product p) throws Exception;
 
     void addToWatchlist(int uid, Product p) throws Exception;
+
+    void deleteFromFavorites(int uid, int id) throws Exception;
 }
 
