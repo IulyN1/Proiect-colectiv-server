@@ -119,7 +119,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
             }
             result.close();
         } catch (SQLException ex) {
-            throw new Exception("Error getting favorite!" + ex.getMessage());
+            throw new Exception("Error getting favorite!");
         }
         return products;
     }
