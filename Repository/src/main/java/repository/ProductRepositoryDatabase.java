@@ -99,9 +99,9 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-    public List<Product> getFavoriteByUidAndPid(int uid, int pid) throws Exception {
+    public Product getFavoriteByUidAndPid(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
-        List<Product> products = new ArrayList<>();
+        Product product = null;
         try {
             PreparedStatement statement = con.prepareStatement
                     ("SELECT id, name, price, nrInStock FROM UsersProductsFavorites as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ? AND F.pid = ?");
@@ -114,14 +114,13 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 String name = result.getString("name");
                 int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                Product product = new Product(id, name, price, nrInStock);
-                products.add(product);
+                product = new Product(id, name, price, nrInStock);
             }
             result.close();
         } catch (SQLException ex) {
             throw new Exception("Error getting favorite!");
         }
-        return products;
+        return product;
     }
 
     @Override
@@ -155,20 +154,21 @@ public class ProductRepositoryDatabase implements ProductRepository {
         Product product = null;
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price, nrInStock FROM UsersProductsWatchlist as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ? AND F.pid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsWatchlist as W INNER JOIN Products as P ON W.pid = P.id WHERE W.uid = ? AND W.pid = ?");
             statement.setInt(1, uid);
             statement.setInt(2, pid);
 
             ResultSet result = statement.executeQuery();
-            int id = result.getInt("id");
-            String name = result.getString("name");
-            int price = result.getInt("price");
-            int stock = result.getInt("nrInStock");
-            product = new Product(id, name, price, stock);
-
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                int stock = result.getInt("nrInStock");
+                product = new Product(id, name, price, stock);
+            }
             result.close();
         } catch (SQLException ex) {
-            throw new Exception("Error getting favorite!");
+            throw new Exception("Error getting watchlist product!");
         }
         return product;
     }
