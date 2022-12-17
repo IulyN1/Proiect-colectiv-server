@@ -38,14 +38,13 @@ public class RestControl {
     }
 
     @RequestMapping(value="/{uid}/favorites/{pid}", method= RequestMethod.GET)
-    public Product[] getFavoritesForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
-        return productRepository.getFavoriteByUidAndPid(uid, pid).toArray(new Product[0]);
+    public Product getFavoriteProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        return productRepository.getFavoriteByUidAndPid(uid, pid);
     }
 
     @RequestMapping(value="/{uid}/watchlist/{pid}", method= RequestMethod.GET)
-    public int getWatchlistProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
-        if(productRepository.getWatchlistByUidAndPid(uid, pid) != null) return 1;
-        else return 0;
+    public Product getWatchlistProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        return productRepository.getWatchlistByUidAndPid(uid, pid);
     }
 
    //GET all reviews for a product
