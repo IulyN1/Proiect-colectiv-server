@@ -110,9 +110,15 @@ public class RestControl {
     // DELETE
     @RequestMapping(value="{uid}/favorites/{pid}", method = RequestMethod.DELETE)
     public void deleteFromFavorites(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        System.out.println("Deleted favorite...");
         productRepository.deleteFromFavorites(uid, pid);
     }
 
+    @RequestMapping(value = "/reviews/{rid}", method = RequestMethod.DELETE)
+    public void deleteReview(@PathVariable("rid") int rid, @RequestBody Review review) throws Exception {
+        System.out.println("Deleted review...");
+        productRepository.deleteReview(review.getUserId(), review.getProductId(), rid);
+    }
 
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
     // returns 1 if user exists and 0 if not
