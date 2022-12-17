@@ -28,11 +28,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-    public void test() {
-        System.out.println("Consider yourself tested");
-    }
-
-    @Override
     public Product add(Product e) {
         return null;
     }
@@ -168,7 +163,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         Product product = null;
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price FROM UsersProductsWatchlist as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ? AND F.pid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsWatchlist as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ? AND F.pid = ?");
             statement.setInt(1, uid);
             statement.setInt(2, pid);
 
@@ -176,7 +171,8 @@ public class ProductRepositoryDatabase implements ProductRepository {
             int id = result.getInt("id");
             String name = result.getString("name");
             int price = result.getInt("price");
-            product = new Product(id, name, price);
+            int stock = result.getInt("nrInStock");
+            product = new Product(id, name, price, stock);
 
             result.close();
         } catch (SQLException ex) {
@@ -212,6 +208,23 @@ public class ProductRepositoryDatabase implements ProductRepository {
             statement.executeUpdate();
         } catch (SQLException ex) {
             throw new Exception("Error adding to watchlist!");
+        }
+    }
+
+    @Override
+    public void deleteFromFavorites(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("DELETE FROM UsersProductsFavorites WHERE uid=? AND pid=?");
+            statement.setInt(1,uid);
+            statement.setInt(2,pid);
+            //var deleted = getFavoriteByUidAndPid(uid,pid).get(0);
+            statement.executeUpdate();
+            //return deleted;
+        }
+        catch (Exception ex) {
+            throw new Exception("Error deleting from favorites with pid " + pid + " and uid " + uid);
         }
     }
 

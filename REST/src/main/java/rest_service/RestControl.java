@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import repository.ProductRepository;
 import repository.ReviewRepository;
 import domain.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import repository.ProductRepository;
 import repository.UserRepository;
 
 @CrossOrigin
@@ -95,7 +92,7 @@ public class RestControl {
 
     //ADD
     @RequestMapping(value="/users", method = RequestMethod.POST)
-    public User create(@RequestBody User user) throws Exception {
+    public User create(@RequestBody User user) {
         System.out.println("Adding user ... ");
         return userRepository.add(user);
     }
@@ -109,6 +106,13 @@ public class RestControl {
     public void addToWatchlist(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
         productRepository.addToWatchlist(uid, product);
     }
+
+    // DELETE
+    @RequestMapping(value="{uid}/favorites/{pid}", method = RequestMethod.DELETE)
+    public void deleteFromFavorites(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        productRepository.deleteFromFavorites(uid, pid);
+    }
+
 
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
     // returns 1 if user exists and 0 if not
