@@ -78,24 +78,16 @@ public class ProductRepositoryDatabase implements ProductRepository {
         List<Product> products = new ArrayList<>();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT * FROM UsersProductsFavorites WHERE uid=?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsFavorites as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ?");
             statement.setInt(1, uid);
 
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                int pid = result.getInt("pid");
-                PreparedStatement statement2 = con.prepareStatement
-                        ("SELECT * FROM Products WHERE id=?");
-                statement2.setInt(1, pid);
-
-                ResultSet result2 = statement2.executeQuery();
-                result2.next();
-
-                int id = result2.getInt("id");
-                String name = result2.getString("name");
-                int price = result2.getInt("price");
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                result2.close();
+                result.close();
                 Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
@@ -112,7 +104,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         List<Product> products = new ArrayList<>();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price FROM UsersProductsFavorites as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ? AND F.pid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsFavorites as F INNER JOIN Products as P ON F.pid = P.id WHERE F.uid = ? AND F.pid = ?");
             statement.setInt(1, uid);
             statement.setInt(2, pid);
 
@@ -127,7 +119,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
             }
             result.close();
         } catch (SQLException ex) {
-            throw new Exception("Error getting favorite!");
+            throw new Exception("Error getting favorite!" + ex.getMessage());
         }
         return products;
     }
@@ -138,7 +130,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         List<Product> products = new ArrayList<>();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price FROM UsersProductsWatchlist as W INNER JOIN Products as P ON W.pid = P.id WHERE W.uid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsWatchlist as W INNER JOIN Products as P ON W.pid = P.id WHERE W.uid = ?");
             statement.setInt(1, uid);
 
             ResultSet result = statement.executeQuery();
