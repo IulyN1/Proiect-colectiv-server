@@ -2,3 +2,5 @@ rootProject.name = 'server'
 include 'Repository'
 include 'REST'
 include 'Domain'
+include 'EmailService'
+
