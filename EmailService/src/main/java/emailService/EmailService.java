@@ -20,19 +20,22 @@ public class EmailService implements EmailSender{
         String host = "smtp.gmail.com";
         properties.put("mail.smtp.starttls.enable", "true");
         //props.put("mail.smtp.host", host);
-        properties.put("mail.smtp.ssl.trust", host);
-        properties.put("mail.smtp.user", "flaviadorbat@gmail.com");
-        properties.put("mail.smtp.password", "xxxxxxx");
-        properties.put("mail.smtp.port", "465");//587
+        properties.put("mail.smtp.socketFactory.port", "465");
+        properties.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.ssl.trust", "mail.smtp.gmail.com");
+        properties.put("mail.smtp.user", "flaviadorobat@gmail.com");
+        properties.put("mail.smtp.password", "");
         properties.put("mail.smtp.auth", "true");
 
        // String accountEmail = "flaviadorobat@gmail.com";
        // Session session = Session.getDefaultInstance(properties);
        // Message message = prepareMessage(session, accountEmail,recepient);
-      Session session = Session.getInstance(properties, new Authenticator() {
+      Session session = Session.getDefaultInstance(properties, new Authenticator() {
           @Override
           protected PasswordAuthentication getPasswordAuthentication() {
-              return new PasswordAuthentication("flaviadorobat@gmail.com", "xxxxx");
+              return new PasswordAuthentication("flaviadorobat@gmail.com", "");
           }
       });
         Message message = prepareMessage(session,"flaviadorobat@gmail.com",recepient);
