@@ -26,5 +26,6 @@ public interface ProductRepository extends Repository<Product>{
 
     void deleteReview(int uid, int pid, int rid) throws Exception;
 
-    }
+    byte[] getProductImageByPid(int pid) throws Exception;
+}
 

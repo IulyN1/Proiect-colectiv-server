@@ -9,6 +9,11 @@ import repository.ProductRepository;
 import repository.ReviewRepository;
 import domain.User;
 import repository.UserRepository;
+<<<<<<< HEAD
+=======
+import java.util.Base64;
+
+>>>>>>> 060d83ef7bb71b7d36753cb82288b34cd6536025
 
 @CrossOrigin
 @RestController
@@ -107,12 +112,15 @@ public class RestControl {
         productRepository.addToWatchlist(uid, product);
     }
 
+<<<<<<< HEAD
     //DELETE a product from the watchlist of a user
     @RequestMapping(value="/{uid}/watchlist/{pid}", method= RequestMethod.DELETE)
     public void removeFromWatchlist(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         productRepository.deleteFromWatchlist(uid, pid);
     }
 
+=======
+>>>>>>> 060d83ef7bb71b7d36753cb82288b34cd6536025
     // DELETE
     @RequestMapping(value="{uid}/favorites/{pid}", method = RequestMethod.DELETE)
     public void deleteFromFavorites(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
@@ -126,8 +134,18 @@ public class RestControl {
         productRepository.deleteReview(review.getUserId(), review.getProductId(), rid);
     }
 
+<<<<<<< HEAD
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
     // returns 1 if user exists and 0 if not
+=======
+    // get image for product, returns encoded in base64 byte array or null if pid doesn't exist
+    @RequestMapping(value="/product/{pid}/image", method= RequestMethod.GET)
+    public byte[] getImageForProduct(@PathVariable("pid") int pid) throws Exception {
+        return Base64.getEncoder().encodeToString(productRepository.getProductImageByPid(pid)).getBytes();
+    }
+
+    // returns userId if user exists or -1 if not
+>>>>>>> 060d83ef7bb71b7d36753cb82288b34cd6536025
     @RequestMapping(value="/login", method= RequestMethod.POST)
     public int login(@RequestBody LoginForm loginForm) {
         User temp = new User(null, loginForm.getEmail(), loginForm.getPassword());

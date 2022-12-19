@@ -219,6 +219,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+
     public void deleteFromFavorites(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -263,6 +264,27 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+
+    public byte[] getProductImageByPid(int pid) throws Exception
+    {
+        byte[] res = null;
+        Connection con = dbUtils.getConnection();
+        con.setAutoCommit(false);
+        try {
+            PreparedStatement statement = con.prepareStatement ("SELECT image FROM Products WHERE id=?");
+            statement.setInt(1, pid);
+            ResultSet result = statement.executeQuery();
+            res = result.getBytes("image");
+            result.close();
+        }
+        catch (Exception ex) {
+            throw new Exception("Error getting image for product with pid " + pid);
+        }
+        return res;
+    }
+
+    @Override
+
     public int size() {
         return -1;
     }
