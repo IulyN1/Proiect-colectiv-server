@@ -269,7 +269,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     {
         byte[] res = null;
         Connection con = dbUtils.getConnection();
-        con.setAutoCommit(false);
         try {
             PreparedStatement statement = con.prepareStatement ("SELECT image FROM Products WHERE id=?");
             statement.setInt(1, pid);
