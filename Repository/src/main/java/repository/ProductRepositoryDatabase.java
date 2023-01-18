@@ -204,6 +204,22 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public void deleteFromWatchlist(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("DELETE FROM UsersProductsWatchlist  WHERE uid=? and pid=?;");
+            statement.setInt(1, uid);
+            statement.setInt(2, pid);
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new Exception("Error removing from watchlist!");
+        }
+    }
+
+    @Override
+
     public void deleteFromFavorites(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -248,11 +264,11 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+
     public byte[] getProductImageByPid(int pid) throws Exception
     {
         byte[] res = null;
         Connection con = dbUtils.getConnection();
-        con.setAutoCommit(false);
         try {
             PreparedStatement statement = con.prepareStatement ("SELECT image FROM Products WHERE id=?");
             statement.setInt(1, pid);
@@ -267,6 +283,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+
     public int size() {
         return -1;
     }
