@@ -5,7 +5,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
 import java.util.Properties;
 
 
@@ -35,11 +34,11 @@ public class EmailSenderUsingSMTP {
      *            the message body of email
      * @return the string which gives response for email is send or not
      */
-    public String connectAndSendSmtp(String serverName, String portNo, String secureConnection, String userName, String password, String toEmail, String subject, String msg, String[] attachFiles){
+    public String connectAndSendSmtp(String serverName, String portNo, String secureConnection, String userName, String password, String toEmail, String subject, String msg){
 
         emailSettings(serverName, portNo, secureConnection);
         createSession(userName, password);
-        String issend = sendMessage(userName, toEmail,subject,msg, attachFiles);
+        String issend = sendMessage(userName, toEmail,subject,msg);
         return issend;
     }
 
@@ -92,10 +91,9 @@ public class EmailSenderUsingSMTP {
      * @param toEmail - String - "TO" part of the email
      * @param subject - String - the subject of the email
      * @param msg   - String - the text body of the email
-     * @param attachFiles - String[] - represents the path of the file which is attached to the email
-     * @return
+     * @return a String that says if the mail was sent with success or an error occured
      */
-    public String sendMessage(String fromEmail, String toEmail, String subject, String msg, String[] attachFiles) {
+    public String sendMessage(String fromEmail, String toEmail, String subject, String msg) {
         String msgsendresponse="";
         try {
 
@@ -105,7 +103,6 @@ public class EmailSenderUsingSMTP {
             message.setSubject(subject);
 
 
-            //-----------* Send mail with attachments code Starts here *---------------------
             Multipart multipart = new MimeMultipart();
             MimeBodyPart messageBodyPart = new MimeBodyPart();
 
@@ -113,7 +110,7 @@ public class EmailSenderUsingSMTP {
             messageBodyPart.setContent(msg, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
-            // adds attachments
+           /* // adds attachments
             MimeBodyPart attachPart = new MimeBodyPart();
             if (attachFiles != null && attachFiles.length > 0) {
                 for (String filePath : attachFiles) {
@@ -126,9 +123,10 @@ public class EmailSenderUsingSMTP {
 
                     multipart.addBodyPart(attachPart);
                 }
-            }
+            } */
+            //------------* Send mail with attachments code Ends here *------------------------ */
+
             message.setContent(multipart);
-            //------------* Send mail with attachments code Ends here *------------------------
             try {
                 Transport.send(message);
                 msgsendresponse="Message_Sent";		//Don't change this message String
@@ -152,29 +150,31 @@ public class EmailSenderUsingSMTP {
     /**
      * This method is used to set the parameters for the sending email method which is implemented above
      */
-    public static void send() {
+    public static void sendNotificationOutOfStock(String toEmail, String products[]) {
 
         String serverName = "smtp.gmail.com";		//  smtp.mail.yahoo.com
         String portNo = "465";							// 465 , 587 , 25 ... 465 best for text emails
         String secureConnection = "ssl";					// ssl , tls , never
         String userName = "rpaubb@gmail.com";
         String password = "xyjuiexsojgkuvaz";
-        String toEmail = "flaviad2@yahoo.com";
-        String subject = "New Assessment mail";
-        String msg = "<h1> This is test mail please ignore... </h1>";
-
-        // attachments
-        String[] attachFiles = new String[1];
-        attachFiles[0] = "C:\\Users\\home\\Desktop\\FCSB.xlsx";
+        String subject = "Out of stock";
+        String msgGreet = "<h1> Hello, there! <h1> ";
+        String msgCause = "<h2> This is an email sent to notify you that some products from your watchlist are out of stock right now. </h2>";
+        StringBuilder productsOutOfStock = new StringBuilder();
+        for(String product: products)
+        {
+            productsOutOfStock.append("\n").append(product);
+        }
+        String msg = msgGreet + msgCause + "<h3> The products that are out of stock are: \n" + productsOutOfStock + "<h3>";
 
 
         EmailSenderUsingSMTP oe = new EmailSenderUsingSMTP();
-        oe.connectAndSendSmtp(serverName, portNo, secureConnection, userName, password, toEmail, subject, msg, attachFiles);
+        oe.connectAndSendSmtp(serverName, portNo, secureConnection, userName, password, toEmail, subject, msg);
 
         //Check methods - used this for debug
         /*oe.createSession(userName, password);
         oe.emailSettings(serverName, portNo, secureConnection);
-        oe.sendMessage(userName, toEmail, subject, msg,attachFiles);*/
+        oe.sendMessage(userName, toEmail, subject, msg);*/
 
     }
 }
