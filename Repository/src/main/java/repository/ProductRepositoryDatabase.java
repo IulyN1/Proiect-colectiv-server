@@ -301,7 +301,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         List<Product> products = new ArrayList<>();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price, nrInStock FROM UsersProductsCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsShoppingCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ?");
             statement.setInt(1, uid);
 
             ResultSet result = statement.executeQuery();
@@ -327,7 +327,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         Product product = null;
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price, nrInStock FROM UsersProductsCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ? AND C.pid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsShoppingCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ? AND C.pid = ?");
             statement.setInt(1, uid);
             statement.setInt(2, pid);
 
