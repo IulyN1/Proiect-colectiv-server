@@ -35,6 +35,12 @@ public class RestControl {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
     }
 
+    @RequestMapping(value="/{uid}/cart", method= RequestMethod.GET)
+    public Product[] getCartForUser(@PathVariable("uid") int uid
+    ) throws Exception {
+        return productRepository.getCartProductsByUid(uid).toArray(new Product[0]);
+    }
+
     @RequestMapping(value="/{uid}/watchlist", method= RequestMethod.GET)
     public Product[] getWatchlistForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getWatchlistByUid(uid).toArray(new Product[0]);
@@ -43,6 +49,11 @@ public class RestControl {
     @RequestMapping(value="/{uid}/favorites/{pid}", method= RequestMethod.GET)
     public Product getFavoriteProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         return productRepository.getFavoriteByUidAndPid(uid, pid);
+    }
+
+    @RequestMapping(value="/{uid}/cart/{pid}", method= RequestMethod.GET)
+    public Product getCartProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        return productRepository.getCartProductByUidAndPid(uid, pid);
     }
 
     @RequestMapping(value="/{uid}/watchlist/{pid}", method= RequestMethod.GET)
