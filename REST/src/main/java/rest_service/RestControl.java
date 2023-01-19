@@ -100,6 +100,11 @@ public class RestControl {
         return userRepository.add(user);
     }
 
+    @RequestMapping(value="/{uid}/shoppingcart", method= RequestMethod.POST)
+    public void addToShoppingCart(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
+        productRepository.addToShoppingCart(uid, product);
+    }
+
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.POST)
     public void addToFavorites(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
         productRepository.addToFavorites(uid, product);
@@ -115,7 +120,6 @@ public class RestControl {
     public void removeFromWatchlist(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         productRepository.deleteFromWatchlist(uid, pid);
     }
-
 
     // DELETE
     @RequestMapping(value="{uid}/favorites/{pid}", method = RequestMethod.DELETE)
