@@ -29,5 +29,7 @@ public interface ProductRepository extends Repository<Product> {
     byte[] getProductImageByPid(int pid) throws Exception;
 
     List<Product> getCartProductsByUid(int uid) throws Exception;
+
+    Product getCartProductByUidAndPid(int uid, int pid) throws Exception;
 }
 

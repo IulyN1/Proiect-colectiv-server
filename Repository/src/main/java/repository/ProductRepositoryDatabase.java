@@ -309,6 +309,31 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public Product getCartProductByUidAndPid(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        Product product = null;
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ? AND C.pid = ?");
+            statement.setInt(1, uid);
+            statement.setInt(2, pid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
+                product = new Product(id, name, price, nrInStock);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting cart item!");
+        }
+        return product;
+    }
+
+    @Override
 
     public int size() {
         return -1;

@@ -52,6 +52,11 @@ public class RestControl {
         return productRepository.getFavoriteByUidAndPid(uid, pid);
     }
 
+    @RequestMapping(value="/{uid}/cart/{pid}", method= RequestMethod.GET)
+    public Product getCartProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        return productRepository.getCartProductByUidAndPid(uid, pid);
+    }
+
     @RequestMapping(value="/{uid}/watchlist/{pid}", method= RequestMethod.GET)
     public Product getWatchlistProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         return productRepository.getWatchlistByUidAndPid(uid, pid);
