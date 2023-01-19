@@ -144,6 +144,12 @@ public class RestControl {
         productRepository.deleteReview(review.getUserId(), review.getProductId(), rid);
     }
 
+    @RequestMapping(value="/{uid}/cart/{pid}", method = RequestMethod.DELETE)
+    public void deleteProductFromCart(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        System.out.println("Deleting product from user's cart...");
+        productRepository.deleteCartProductByUidAndPid(uid, pid);
+    }
+
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
     // returns 1 if user exists and 0 if not
     // get image for product, returns encoded in base64 byte array or null if pid doesn't exist
