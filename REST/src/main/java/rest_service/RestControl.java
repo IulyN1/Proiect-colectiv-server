@@ -36,6 +36,12 @@ public class RestControl {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
     }
 
+    @RequestMapping(value="/{uid}/cart", method= RequestMethod.GET)
+    public Product[] getCartForUser(@PathVariable("uid") int uid
+    ) throws Exception {
+        return productRepository.getCartProductsByUid(uid).toArray(new Product[0]);
+    }
+
     @RequestMapping(value="/{uid}/watchlist", method= RequestMethod.GET)
     public Product[] getWatchlistForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getWatchlistByUid(uid).toArray(new Product[0]);

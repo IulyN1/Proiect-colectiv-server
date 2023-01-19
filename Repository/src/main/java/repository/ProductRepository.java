@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Custom interface for the product repository
  */
-public interface ProductRepository extends Repository<Product>{
+public interface ProductRepository extends Repository<Product> {
     List<Product> getFavoritesByUid(int uid) throws Exception;
 
     List<Product> getWatchlistByUid(int uid) throws Exception;
@@ -27,5 +27,7 @@ public interface ProductRepository extends Repository<Product>{
     void deleteReview(int uid, int pid, int rid) throws Exception;
 
     byte[] getProductImageByPid(int pid) throws Exception;
+
+    List<Product> getCartProductsByUid(int uid) throws Exception;
 }
 
