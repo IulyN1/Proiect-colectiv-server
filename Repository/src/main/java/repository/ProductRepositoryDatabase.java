@@ -87,7 +87,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 String name = result.getString("name");
                 int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                result.close();
                 Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
@@ -129,7 +128,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         List<Product> products = new ArrayList<>();
         try {
             PreparedStatement statement = con.prepareStatement
-                    ("SELECT id, name, price, nrInStock FROM UsersProductsWatchlist as W INNER JOIN Products as P ON W.pid = P.id WHERE W.uid = ?");
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsFavorites as W INNER JOIN Products as P ON W.pid = P.id WHERE W.uid = ?");
             statement.setInt(1, uid);
 
             ResultSet result = statement.executeQuery();
@@ -310,7 +309,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 String name = result.getString("name");
                 int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                result.close();
                 Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
