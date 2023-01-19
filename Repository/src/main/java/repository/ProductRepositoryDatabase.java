@@ -4,10 +4,7 @@ import domain.Product;
 import org.springframework.stereotype.Component;
 import repository.utils.JdbcUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -358,6 +355,38 @@ public class ProductRepositoryDatabase implements ProductRepository {
         }
         catch (Exception ex) {
             throw new Exception("Error deleting product from cart with pid " + pid + " and uid " + uid);
+        }
+    }
+
+    @Override
+    public void deleteAllCartProducts(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("DELETE FROM UsersProductsShoppingCart WHERE uid=?");
+            statement.setInt(1,uid);
+            statement.executeUpdate();
+        }
+        catch (Exception ex) {
+            throw new Exception("Error deleting all products from cart for user " + uid);
+        }
+    }
+
+    @Override
+    public void removeBoughtProducts(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("UPDATE Products " +
+                            "SET nrInStock = nrInStock - 1 " +
+                            "WHERE EXISTS " +
+                            "(SELECT 1 FROM UsersProductsShoppingCart WHERE Products.id = UsersProductsShoppingCart.pid AND UsersProductsShoppingCart.uid = ?) ");
+            statement.setInt(1,uid);
+            statement.executeUpdate();
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new Exception("Error removing bought products from db for user " + uid);
         }
     }
 

@@ -20,9 +20,9 @@ public class RestControl {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ReviewRepository reviewRepository;
+
 
     @RequestMapping(value="/products/", method= RequestMethod.GET)
     public Product[] getAll() throws Exception {
@@ -148,6 +148,14 @@ public class RestControl {
     public void deleteProductFromCart(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         System.out.println("Deleting product from user's cart...");
         productRepository.deleteCartProductByUidAndPid(uid, pid);
+    }
+
+    @RequestMapping(value="/{uid}/cart", method = RequestMethod.DELETE)
+    public void buyAndDeleteAllProductsFromCart(@PathVariable("uid") int uid) throws Exception {
+        System.out.println("Removing bought products from storage...");
+        productRepository.removeBoughtProducts(uid);
+        System.out.println("Deleting products from user's cart...");
+        productRepository.deleteAllCartProducts(uid);
     }
 
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid

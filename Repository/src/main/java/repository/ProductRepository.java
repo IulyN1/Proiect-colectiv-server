@@ -30,11 +30,16 @@ public interface ProductRepository extends Repository<Product> {
 
     void deleteCartProductByUidAndPid(int uid, int pid) throws Exception;
 
+    void deleteAllCartProducts(int uid) throws Exception;
+
+    void removeBoughtProducts(int uid) throws Exception;
+
     byte[] getProductImageByPid(int pid) throws Exception;
 
     List<Product> getCartProductsByUid(int uid) throws Exception;
 
     Product getCartProductByUidAndPid(int uid, int pid) throws Exception;
+
 
 }
 
