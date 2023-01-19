@@ -174,6 +174,21 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public void addToShoppingCart(int uid, Product p) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("INSERT INTO UsersProductsShoppingCart (uid, pid) VALUES (?, ?);");
+            statement.setInt(1, uid);
+            statement.setInt(2, p.getId());
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new Exception("Error adding to shopping cart!");
+        }
+    }
+
+    @Override
     public void addToFavorites(int uid, Product p) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -219,7 +234,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public void deleteFromFavorites(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -264,7 +278,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public byte[] getProductImageByPid(int pid) throws Exception
     {
         byte[] res = null;

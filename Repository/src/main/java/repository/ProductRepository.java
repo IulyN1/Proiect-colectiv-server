@@ -16,9 +16,12 @@ public interface ProductRepository extends Repository<Product> {
 
     Product getWatchlistByUidAndPid(int uid, int pid) throws Exception;
 
+    void addToShoppingCart(int uid, Product p) throws Exception;
+
     void addToFavorites(int uid, Product p) throws Exception;
 
     void addToWatchlist(int uid, Product p) throws Exception;
+
 
     void deleteFromWatchlist(int uid,int pid) throws Exception;
 

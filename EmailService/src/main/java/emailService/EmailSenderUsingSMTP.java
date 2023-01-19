@@ -1,0 +1,180 @@
+package emailService;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.util.Properties;
+
+
+public class EmailSenderUsingSMTP {
+
+    static Properties props = System.getProperties();
+    static Session l_session = null;
+
+    /**
+     * Connect and send smtp.
+     *
+     * @param serverName
+     *            the server name / host name
+     * @param portNo
+     *            the port number
+     * @param secureConnection
+     *            the secure connection i.e, STARTTLS or STARTSSL settings keep true or false or never
+     * @param userName
+     *            the email used for login
+     * @param password
+     *            the password of email account
+     * @param toEmail
+     *            the email of the receiver
+     * @param subject
+     *            the subject of email
+     * @param msg
+     *            the message body of email
+     * @return the string which gives response for email is send or not
+     */
+    public String connectAndSendSmtp(String serverName, String portNo, String secureConnection, String userName, String password, String toEmail, String subject, String msg){
+
+        emailSettings(serverName, portNo, secureConnection);
+        createSession(userName, password);
+        String issend = sendMessage(userName, toEmail,subject,msg);
+        return issend;
+    }
+
+    /**
+     * All the params bellow have been used to create the email sending session
+     * @param host
+     * @param port
+     * @param secureCon
+     */
+    public void emailSettings(String host, String  port, String secureCon) {
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.debug", "false");
+        props.put("mail.smtp.port", port);
+        if(secureCon.equalsIgnoreCase("tls")){
+            props.put("mail.smtp.starttls.enable", "true");
+        }else if(secureCon.equalsIgnoreCase("ssl")){
+            props.put("mail.smtp.startssl.enable", "true");  // make this true if port=465
+        }else{
+            props.put("mail.smtp.starttls.enable", "false");
+            props.put("mail.smtp.startssl.enable", "false");
+        }
+        props.put("mail.smtp.socketFactory.port", port);
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
+
+    }
+
+
+    /**
+     * This method adds an authentification when creating an email sending session
+     * @param username
+     * @param pass
+     */
+    public void createSession(final String username, final String pass) {
+
+        l_session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, pass);
+                    }
+                });
+        l_session.setDebug(true); // Enable the debug mode
+    }
+
+
+    /**
+     * The method sends the composed email on the sending email session
+     * @param fromEmail - String - which address the email will be send from
+     * @param toEmail - String - "TO" part of the email
+     * @param subject - String - the subject of the email
+     * @param msg   - String - the text body of the email
+     * @return a String that says if the mail was sent with success or an error occured
+     */
+    public String sendMessage(String fromEmail, String toEmail, String subject, String msg) {
+        String msgsendresponse="";
+        try {
+
+            MimeMessage message = new MimeMessage(l_session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setSubject(subject);
+
+
+            Multipart multipart = new MimeMultipart();
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+            // Set TEXT/HTML message here
+            messageBodyPart.setContent(msg, "text/html");
+            multipart.addBodyPart(messageBodyPart);
+
+           /* // adds attachments
+            MimeBodyPart attachPart = new MimeBodyPart();
+            if (attachFiles != null && attachFiles.length > 0) {
+                for (String filePath : attachFiles) {
+                    try {
+                        attachPart.attachFile(filePath);
+
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    multipart.addBodyPart(attachPart);
+                }
+            } */
+            //------------* Send mail with attachments code Ends here *------------------------ */
+
+            message.setContent(multipart);
+            try {
+                Transport.send(message);
+                msgsendresponse="Message_Sent";		//Don't change this message String
+                System.out.println(msgsendresponse);
+            } catch (Exception ex) {
+                msgsendresponse="Email sending failed due to: " +ex.getLocalizedMessage();
+                System.out.println(msgsendresponse);		//gives error message for failure
+
+            }
+
+        } catch (MessagingException mex) {
+            msgsendresponse = "Error occured in creation of MIME message due to:  "+mex.getLocalizedMessage();
+            System.out.println(msgsendresponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msgsendresponse;
+    }
+
+
+    /**
+     * This method is used to set the parameters for the sending email method which is implemented above
+     */
+    public static void sendNotificationOutOfStock(String toEmail, String products[]) {
+
+        String serverName = "smtp.gmail.com";		//  smtp.mail.yahoo.com
+        String portNo = "465";							// 465 , 587 , 25 ... 465 best for text emails
+        String secureConnection = "ssl";					// ssl , tls , never
+        String userName = "rpaubb@gmail.com";
+        String password = "xyjuiexsojgkuvaz";
+        String subject = "Out of stock";
+        String msgGreet = "<h1> Hello, there! <h1> ";
+        String msgCause = "<h2> This is an email sent to notify you that some products from your watchlist are out of stock right now. </h2>";
+        StringBuilder productsOutOfStock = new StringBuilder();
+        for(String product: products)
+        {
+            productsOutOfStock.append("\n").append(product);
+        }
+        String msg = msgGreet + msgCause + "<h3> The products that are out of stock are: \n" + productsOutOfStock + "<h3>";
+
+
+        EmailSenderUsingSMTP oe = new EmailSenderUsingSMTP();
+        oe.connectAndSendSmtp(serverName, portNo, secureConnection, userName, password, toEmail, subject, msg);
+
+        //Check methods - used this for debug
+        /*oe.createSession(userName, password);
+        oe.emailSettings(serverName, portNo, secureConnection);
+        oe.sendMessage(userName, toEmail, subject, msg);*/
+
+    }
+}
