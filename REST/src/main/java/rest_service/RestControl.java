@@ -9,7 +9,6 @@ import repository.ProductRepository;
 import repository.ReviewRepository;
 import domain.User;
 import repository.UserRepository;
-
 import java.util.Base64;
 
 
@@ -115,7 +114,6 @@ public class RestControl {
     public void removeFromWatchlist(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         productRepository.deleteFromWatchlist(uid, pid);
     }
-
 
     // DELETE
     @RequestMapping(value="{uid}/favorites/{pid}", method = RequestMethod.DELETE)

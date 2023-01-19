@@ -20,6 +20,7 @@ public interface ProductRepository extends Repository<Product>{
 
     void addToWatchlist(int uid, Product p) throws Exception;
 
+
     void deleteFromWatchlist(int uid,int pid) throws Exception;
 
     void deleteFromFavorites(int uid, int id) throws Exception;

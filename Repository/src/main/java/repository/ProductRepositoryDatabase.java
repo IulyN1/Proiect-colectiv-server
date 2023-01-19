@@ -219,7 +219,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public void deleteFromFavorites(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -264,7 +263,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public byte[] getProductImageByPid(int pid) throws Exception
     {
         byte[] res = null;
@@ -283,7 +281,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public int size() {
         return -1;
     }
