@@ -344,6 +344,7 @@ public class ProductRepositoryDatabase implements ProductRepository {
         return product;
     }
 
+    @Override
     public void deleteCartProductByUidAndPid(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
