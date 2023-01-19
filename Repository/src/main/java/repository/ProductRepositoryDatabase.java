@@ -87,7 +87,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 String name = result.getString("name");
                 int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                result.close();
                 Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
@@ -310,7 +309,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 String name = result.getString("name");
                 int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                result.close();
                 Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
