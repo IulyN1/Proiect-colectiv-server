@@ -56,4 +56,12 @@ public class Product implements Serializable {
     public void setNrInStock(int nrInStock) {
         this.nrInStock = nrInStock;
     }
+
+    @Override
+    public String toString() {
+        return
+                name +
+                " with the price of " + price +
+                " RON \n";
+    }
 }
