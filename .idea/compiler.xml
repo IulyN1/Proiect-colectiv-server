@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="16" />
+    <bytecodeTargetLevel target="16">
+      <module name="server" target="17" />
+      <module name="server.Domain" target="17" />
+      <module name="server.Domain.main" target="17" />
+      <module name="server.Domain.test" target="17" />
+      <module name="server.EmailService" target="17" />
+      <module name="server.EmailService.main" target="17" />
+      <module name="server.EmailService.test" target="17" />
+      <module name="server.main" target="17" />
+      <module name="server.Repository" target="17" />
+      <module name="server.Repository.main" target="17" />
+      <module name="server.Repository.test" target="17" />
+      <module name="server.REST" target="17" />
+      <module name="server.REST.main" target="17" />
+      <module name="server.REST.test" target="17" />
+      <module name="server.test" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
