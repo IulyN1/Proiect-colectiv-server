@@ -175,7 +175,6 @@ public class RestControl {
                     }
                 }
                 EmailSenderUsingSMTP.sendNotificationOutOfStock(userRepository.getById(user.getId()).getEmail(), productsThatBecameOutOfStockFromUsersWatchlist);
-
             }
         }
         productRepository.deleteAllCartProducts(uid);

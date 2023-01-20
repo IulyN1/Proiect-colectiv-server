@@ -1,6 +1,7 @@
 package emailService;
 
 import domain.Product;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -17,6 +18,7 @@ public class EmailSenderUsingSMTP {
 
     static Properties props = System.getProperties();
     static Session l_session = null;
+    static Properties emailProperties = createEmailProperties();
 
     /**
      * Connect and send smtp.
@@ -115,22 +117,6 @@ public class EmailSenderUsingSMTP {
             messageBodyPart.setContent(msg, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
-           /* // adds attachments
-            MimeBodyPart attachPart = new MimeBodyPart();
-            if (attachFiles != null && attachFiles.length > 0) {
-                for (String filePath : attachFiles) {
-                    try {
-                        attachPart.attachFile(filePath);
-
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-
-                    multipart.addBodyPart(attachPart);
-                }
-            } */
-            //------------* Send mail with attachments code Ends here *------------------------ */
-
             message.setContent(multipart);
             try {
                 Transport.send(message);
@@ -213,15 +199,13 @@ public class EmailSenderUsingSMTP {
         List<String> products = new ArrayList<>();
         for(Product product : productsList)
         {
-            System.out.println(product);
             products.add(product.toString());
         }
-
-        String serverName = "smtp.gmail.com";		//  smtp.mail.yahoo.com
-        String portNo = "465";							// 465 , 587 , 25 ... 465 best for text emails
-        String secureConnection = "ssl";					// ssl , tls , never
-        String userName = "rpaubb@gmail.com";
-        String password = "xyjuiexsojgkuvaz";
+        String serverName = emailProperties.getProperty("serverName");		//  smtp.mail.yahoo.com
+        String portNo = emailProperties.getProperty("portNo");							// 465 , 587 , 25 ... 465 best for text emails
+        String secureConnection = emailProperties.getProperty("secureConnection");					// ssl , tls , never
+        String userName = emailProperties.getProperty("userName");
+        String password =  emailProperties.getProperty("password");
         String subject = "Out of stock";
         String productsOutOfStock = ": ";
         for(String product: products)
@@ -242,4 +226,16 @@ public class EmailSenderUsingSMTP {
         oe.sendMessage(userName, toEmail, subject, msg);*/
 
     }
+
+    public static Properties createEmailProperties() {
+        Properties emailProps = new Properties();
+        try {
+            emailProps.load(new ClassPathResource("email.properties").getInputStream());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return emailProps;
+    }
+
 }
