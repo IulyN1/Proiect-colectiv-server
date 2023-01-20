@@ -4,10 +4,7 @@ import domain.Product;
 import org.springframework.stereotype.Component;
 import repository.utils.JdbcUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -87,7 +84,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
                 String name = result.getString("name");
                 int price = result.getInt("price");
                 int nrInStock = result.getInt("nrInStock");
-                result.close();
                 Product product = new Product(id, name, price, nrInStock);
                 products.add(product);
             }
@@ -174,6 +170,21 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public void addToShoppingCart(int uid, Product p) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("INSERT INTO UsersProductsShoppingCart (uid, pid) VALUES (?, ?);");
+            statement.setInt(1, uid);
+            statement.setInt(2, p.getId());
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new Exception("Error adding to shopping cart!");
+        }
+    }
+
+    @Override
     public void addToFavorites(int uid, Product p) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -219,7 +230,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public void deleteFromFavorites(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
         try {
@@ -264,7 +274,6 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
-
     public byte[] getProductImageByPid(int pid) throws Exception
     {
         byte[] res = null;
@@ -283,7 +292,105 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public List<Product> getCartProductsByUid(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsShoppingCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ?");
+            statement.setInt(1, uid);
 
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
+                Product product = new Product(id, name, price, nrInStock);
+                products.add(product);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting cart items!");
+        }
+        return products;
+    }
+
+    @Override
+    public Product getCartProductByUidAndPid(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        Product product = null;
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, price, nrInStock FROM UsersProductsShoppingCart as C INNER JOIN Products as P ON C.pid = P.id WHERE C.uid = ? AND C.pid = ?");
+            statement.setInt(1, uid);
+            statement.setInt(2, pid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
+                product = new Product(id, name, price, nrInStock);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting cart item!");
+        }
+        return product;
+    }
+
+    @Override
+    public void deleteCartProductByUidAndPid(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("DELETE FROM UsersProductsShoppingCart WHERE uid=? AND pid=?");
+            statement.setInt(1,uid);
+            statement.setInt(2,pid);
+            //var deleted = getFavoriteByUidAndPid(uid,pid).get(0);
+            statement.executeUpdate();
+            //return deleted;
+        }
+        catch (Exception ex) {
+            throw new Exception("Error deleting product from cart with pid " + pid + " and uid " + uid);
+        }
+    }
+
+    @Override
+    public void deleteAllCartProducts(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("DELETE FROM UsersProductsShoppingCart WHERE uid=?");
+            statement.setInt(1,uid);
+            statement.executeUpdate();
+        }
+        catch (Exception ex) {
+            throw new Exception("Error deleting all products from cart for user " + uid);
+        }
+    }
+
+    @Override
+    public void removeBoughtProducts(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("UPDATE Products " +
+                            "SET nrInStock = nrInStock - 1 " +
+                            "WHERE EXISTS " +
+                            "(SELECT 1 FROM UsersProductsShoppingCart WHERE Products.id = UsersProductsShoppingCart.pid AND UsersProductsShoppingCart.uid = ?) ");
+            statement.setInt(1,uid);
+            statement.executeUpdate();
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new Exception("Error removing bought products from db for user " + uid);
+        }
+    }
+
+    @Override
     public int size() {
         return -1;
     }

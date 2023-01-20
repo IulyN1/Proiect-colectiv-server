@@ -9,7 +9,6 @@ import repository.ProductRepository;
 import repository.ReviewRepository;
 import domain.User;
 import repository.UserRepository;
-
 import java.util.Base64;
 
 
@@ -21,9 +20,9 @@ public class RestControl {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ReviewRepository reviewRepository;
+
 
     @RequestMapping(value="/products/", method= RequestMethod.GET)
     public Product[] getAll() throws Exception {
@@ -36,6 +35,12 @@ public class RestControl {
         return productRepository.getFavoritesByUid(uid).toArray(new Product[0]);
     }
 
+    @RequestMapping(value="/{uid}/cart", method= RequestMethod.GET)
+    public Product[] getCartForUser(@PathVariable("uid") int uid
+    ) throws Exception {
+        return productRepository.getCartProductsByUid(uid).toArray(new Product[0]);
+    }
+
     @RequestMapping(value="/{uid}/watchlist", method= RequestMethod.GET)
     public Product[] getWatchlistForUser(@PathVariable("uid") int uid) throws Exception {
         return productRepository.getWatchlistByUid(uid).toArray(new Product[0]);
@@ -44,6 +49,11 @@ public class RestControl {
     @RequestMapping(value="/{uid}/favorites/{pid}", method= RequestMethod.GET)
     public Product getFavoriteProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
         return productRepository.getFavoriteByUidAndPid(uid, pid);
+    }
+
+    @RequestMapping(value="/{uid}/cart/{pid}", method= RequestMethod.GET)
+    public Product getCartProductForUser(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        return productRepository.getCartProductByUidAndPid(uid, pid);
     }
 
     @RequestMapping(value="/{uid}/watchlist/{pid}", method= RequestMethod.GET)
@@ -100,6 +110,11 @@ public class RestControl {
         return userRepository.add(user);
     }
 
+    @RequestMapping(value="/{uid}/shoppingcart", method= RequestMethod.POST)
+    public void addToShoppingCart(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
+        productRepository.addToShoppingCart(uid, product);
+    }
+
     @RequestMapping(value="/{uid}/favorites", method= RequestMethod.POST)
     public void addToFavorites(@PathVariable("uid") int uid, @RequestBody Product product) throws Exception {
         productRepository.addToFavorites(uid, product);
@@ -116,7 +131,6 @@ public class RestControl {
         productRepository.deleteFromWatchlist(uid, pid);
     }
 
-
     // DELETE
     @RequestMapping(value="{uid}/favorites/{pid}", method = RequestMethod.DELETE)
     public void deleteFromFavorites(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
@@ -128,6 +142,20 @@ public class RestControl {
     public void deleteReview(@PathVariable("rid") int rid, @RequestBody Review review) throws Exception {
         System.out.println("Deleted review...");
         productRepository.deleteReview(review.getUserId(), review.getProductId(), rid);
+    }
+
+    @RequestMapping(value="/{uid}/cart/{pid}", method = RequestMethod.DELETE)
+    public void deleteProductFromCart(@PathVariable("uid") int uid, @PathVariable("pid") int pid) throws Exception {
+        System.out.println("Deleting product from user's cart...");
+        productRepository.deleteCartProductByUidAndPid(uid, pid);
+    }
+
+    @RequestMapping(value="/{uid}/cart", method = RequestMethod.DELETE)
+    public void buyAndDeleteAllProductsFromCart(@PathVariable("uid") int uid) throws Exception {
+        System.out.println("Removing bought products from storage...");
+        productRepository.removeBoughtProducts(uid);
+        System.out.println("Deleting products from user's cart...");
+        productRepository.deleteAllCartProducts(uid);
     }
 
     // TEMPORARY: this method only checks if the user credentials provided in the POST request are valid
