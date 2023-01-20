@@ -4,7 +4,10 @@ import domain.Product;
 import org.springframework.stereotype.Component;
 import repository.utils.JdbcUtils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -143,6 +146,8 @@ public class ProductRepositoryDatabase implements ProductRepository {
         }
         return products;
     }
+
+
 
     @Override
     public Product getWatchlistByUidAndPid(int uid, int pid) throws Exception {
@@ -341,6 +346,8 @@ public class ProductRepositoryDatabase implements ProductRepository {
         return product;
     }
 
+
+
     @Override
     public void deleteCartProductByUidAndPid(int uid, int pid) throws Exception {
         Connection con = dbUtils.getConnection();
@@ -388,6 +395,74 @@ public class ProductRepositoryDatabase implements ProductRepository {
             System.out.println(ex.getMessage());
             throw new Exception("Error removing bought products from db for user " + uid);
         }
+    }
+
+    @Override
+    public List<Product> getMostRecentBoughtProductsForUser(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        List<Product> products = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, price, nrInStock from Products" +
+                            " WHERE EXISTS " +
+                            "(SELECT 1 FROM UsersProductsShoppingCart WHERE Products.id = UsersProductsShoppingCart.pid AND UsersProductsShoppingCart.uid = ?) ");
+            statement.setInt(1,uid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
+                Product product = new Product(id, name, price, nrInStock);
+                products.add(product);
+            }
+            result.close();
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new Exception("Error getting bought product for user " + uid);
+        }
+        return products;
+
+    }
+
+    @Override
+    public List<Product> getProductsThatBecameOutOfStock(List<Product> boughtProducts) throws Exception {
+        Connection con = dbUtils.getConnection();
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, price, nrInStock FROM Products WHERE nrInStock=? ;");
+            statement.setInt(1,0);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                int price = result.getInt("price");
+                int nrInStock = result.getInt("nrInStock");
+
+                Product product = new Product(id, name, price, nrInStock);
+                products.add(product);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting all sales!");
+        }
+
+        List <Product> becameOutOfStock = new ArrayList<>();
+        for(Product product1 : products)
+        {
+            for(Product product2: boughtProducts)
+            {
+                if(product1.getId() == product2.getId())
+                {
+                    becameOutOfStock.add(product1);
+                }
+            }
+        }
+        return becameOutOfStock;
     }
 
     @Override

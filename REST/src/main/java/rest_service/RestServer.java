@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * Rest server start class
  */
-@ComponentScan(basePackages = {"repository","rest_service"})
+@ComponentScan(basePackages = {"repository","rest_service", "emailService"})
 @SpringBootApplication
 public class RestServer {
     /**

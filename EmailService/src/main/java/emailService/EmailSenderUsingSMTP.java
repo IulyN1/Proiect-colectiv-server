@@ -1,13 +1,18 @@
 package emailService;
 
+import domain.Product;
+import org.springframework.stereotype.Component;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-
+@Component
 public class EmailSenderUsingSMTP {
 
     static Properties props = System.getProperties();
@@ -146,11 +151,71 @@ public class EmailSenderUsingSMTP {
         return msgsendresponse;
     }
 
+    public static String styleTemplate ()
+    {
+        return "  <!DOCTYPE html>\n" +
+                "  <html>\n" +
+                "  <head>\n" +
+                "    <style type=\"text/css\">\n" +
+                "    \n" +
+                "      h1 {\n" +
+                "        color: #040F0E;\n" +
+                "        font-size: 56px;\n" +
+                "      }\n" +
+                "      \n" +
+                "        h2{\n" +
+                "        color: #040F0E;\n" +
+                "        font-size: 28px;\n" +
+                "        font-weight: 900; \n" +
+                "      }\n" +
+                "      \n" +
+                "      p {\n" +
+                "        color: #040F0E;\n" +
+                "        font-weight: bold;\n" +
+                "        font-size: 20px;\n" +
+                "     }\n" +
+                "      \n" +
+                "    </style>\n" +
+                "    \n" +
+                "  </head>";
+    }
+
+    public static String htmlContentGreeting()
+    {
+       return "  <table role=\"presentation\" width=\"100%\">\n" +
+                "  <tr>\n" +
+                "    <td bgcolor=\"#00A4BD\" align=\"center\" style=\"color: white;\">                    \n" +
+                "      <h1> Out of stock notification </h1>\n" +
+                "    </td>\n" +
+                "   </table>" ;
+    }
+
+
+    public static String htmMessageContent(String productsOutOfStock)
+    {
+        return "  <table role=\"presentation\" width=\"100%\">\n" +
+                "  <tr>\n" +
+                "    <td bgcolor=\"#DEF5F1\" align=\"center\" >                    \n" +
+                "        <h2> Hello, there! </h2>\n" +
+                "        <p> This is an email to notify you that some products from your watchlist are out of stock at the moment.   </p> \n" +
+                "        <p> The products that are out of stock are" + productsOutOfStock +" </p> \n" +
+
+                "        <p> Stay tuned because they will come back in stock soon. </p>\n" +
+                "        <p> Best regards from our team! &#129303; </p>                 \n" +
+                "    </td>\n" +
+                " </table>  ";
+    }
 
     /**
      * This method is used to set the parameters for the sending email method which is implemented above
      */
-    public static void sendNotificationOutOfStock(String toEmail, String products[]) {
+    public static void sendNotificationOutOfStock(String toEmail, List<Product> productsList) {
+        List<String> products = new ArrayList<>();
+        for(Product product : productsList)
+        {
+            System.out.println(product);
+            products.add(product.toString());
+        }
 
         String serverName = "smtp.gmail.com";		//  smtp.mail.yahoo.com
         String portNo = "465";							// 465 , 587 , 25 ... 465 best for text emails
@@ -158,14 +223,14 @@ public class EmailSenderUsingSMTP {
         String userName = "rpaubb@gmail.com";
         String password = "xyjuiexsojgkuvaz";
         String subject = "Out of stock";
-        String msgGreet = "<h1> Hello, there! <h1> ";
-        String msgCause = "<h2> This is an email sent to notify you that some products from your watchlist are out of stock right now. </h2>";
-        StringBuilder productsOutOfStock = new StringBuilder();
+        String productsOutOfStock = ": ";
         for(String product: products)
         {
-            productsOutOfStock.append("\n").append(product);
+            productsOutOfStock += product;
+            productsOutOfStock += "<br>";
         }
-        String msg = msgGreet + msgCause + "<h3> The products that are out of stock are: \n" + productsOutOfStock + "<h3>";
+        productsOutOfStock +=".";
+        String msg = htmlContentGreeting() + htmMessageContent(productsOutOfStock);
 
 
         EmailSenderUsingSMTP oe = new EmailSenderUsingSMTP();

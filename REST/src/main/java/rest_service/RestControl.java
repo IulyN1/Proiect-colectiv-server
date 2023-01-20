@@ -3,13 +3,17 @@ package rest_service;
 import domain.LoginForm;
 import domain.Product;
 import domain.Review;
+import domain.User;
+import emailService.EmailSenderUsingSMTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import repository.ProductRepository;
 import repository.ReviewRepository;
-import domain.User;
 import repository.UserRepository;
+
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 
 @CrossOrigin
@@ -22,6 +26,9 @@ public class RestControl {
     private UserRepository userRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private EmailSenderUsingSMTP emailSender;
+
 
 
     @RequestMapping(value="/products/", method= RequestMethod.GET)
@@ -152,9 +159,25 @@ public class RestControl {
 
     @RequestMapping(value="/{uid}/cart", method = RequestMethod.DELETE)
     public void buyAndDeleteAllProductsFromCart(@PathVariable("uid") int uid) throws Exception {
-        System.out.println("Removing bought products from storage...");
+        List<Product> boughtProducts = productRepository.getMostRecentBoughtProductsForUser(uid);
         productRepository.removeBoughtProducts(uid);
-        System.out.println("Deleting products from user's cart...");
+        List<Product> productsThatBecameOutOfStock = productRepository.getProductsThatBecameOutOfStock(boughtProducts);
+        List<User> allUsers = userRepository.getAll();
+
+        for(User user : allUsers) {
+            if (user.getId() != uid) {
+                List<Product> productsThatBecameOutOfStockFromUsersWatchlist = new ArrayList<>();
+                List<Product> watchlistForUser = productRepository.getWatchlistByUid(user.getId());
+                for (Product product1 : productsThatBecameOutOfStock) {
+                   for(Product product2 : watchlistForUser){
+                        if(product1.getId()==product2.getId())
+                        productsThatBecameOutOfStockFromUsersWatchlist.add(product1);
+                    }
+                }
+                EmailSenderUsingSMTP.sendNotificationOutOfStock(userRepository.getById(user.getId()).getEmail(), productsThatBecameOutOfStockFromUsersWatchlist);
+
+            }
+        }
         productRepository.deleteAllCartProducts(uid);
     }
 

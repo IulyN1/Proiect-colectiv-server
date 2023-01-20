@@ -12,6 +12,7 @@ public interface ProductRepository extends Repository<Product> {
 
     List<Product> getWatchlistByUid(int uid) throws Exception;
 
+
     Product getFavoriteByUidAndPid(int uid, int pid) throws Exception;
 
     Product getWatchlistByUidAndPid(int uid, int pid) throws Exception;
@@ -40,6 +41,10 @@ public interface ProductRepository extends Repository<Product> {
 
     Product getCartProductByUidAndPid(int uid, int pid) throws Exception;
 
+
+    List<Product> getMostRecentBoughtProductsForUser(int uid) throws Exception;
+
+    List<Product> getProductsThatBecameOutOfStock(List<Product> boughtProducts) throws Exception;
 
 }
 

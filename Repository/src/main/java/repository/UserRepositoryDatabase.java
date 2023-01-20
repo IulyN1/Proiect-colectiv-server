@@ -33,6 +33,31 @@ public class UserRepositoryDatabase implements UserRepository {
     }
 
     @Override
+    public User getById(int uid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        User user = null;
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("SELECT id, name, email, password from Users WHERE id=?");
+            statement.setInt(1, uid);
+
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                String email = result.getString("email");
+                String pass = result.getString("password");
+                user = new User(id, name, email, pass);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new Exception("Error getting user by id!");
+        }
+        return user;
+    }
+
+
+    @Override
     public User add(User user) {
 
         Connection con= dbUtils.getConnection();
@@ -116,6 +141,7 @@ public class UserRepositoryDatabase implements UserRepository {
         }
         return users;
     }
+
 
     @Override
     public int size() {

@@ -7,6 +7,6 @@ import domain.User;
  */
 public interface UserRepository extends Repository<User>{
     void test();
-
+    User getById(int uid) throws Exception;
 
 }
