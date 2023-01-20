@@ -345,7 +345,23 @@ public class ProductRepositoryDatabase implements ProductRepository {
     }
 
     @Override
+    public void deleteCartProductByUidAndPid(int uid, int pid) throws Exception {
+        Connection con = dbUtils.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement
+                    ("DELETE FROM UsersProductsShoppingCart WHERE uid=? AND pid=?");
+            statement.setInt(1,uid);
+            statement.setInt(2,pid);
+            //var deleted = getFavoriteByUidAndPid(uid,pid).get(0);
+            statement.executeUpdate();
+            //return deleted;
+        }
+        catch (Exception ex) {
+            throw new Exception("Error deleting product from cart with pid " + pid + " and uid " + uid);
+        }
+    }
 
+    @Override
     public int size() {
         return -1;
     }
